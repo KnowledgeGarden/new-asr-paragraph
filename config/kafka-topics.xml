@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<!-- Kafka Topics are now maintained as a common resource in
+	tqos-asr-common /config -->
+
+<properties>
+
+	<parameter name="KAFKA_SERVER_URL" value="localhost" />
+
+	<parameter name="KAFKA_SERVER_PORT" value="9092" />
+
+	<!-- Consumer Topic for handling sentences-->
+	<parameter name="ParagraphConsumerTopic" value="ParagraphIn" />
+	<!-- Producer Topic  which becomes a source topic for the next agent-->
+	<parameter name="SentenceProducerTopic" value="SentenceOut" />
+
+	
+</properties>
