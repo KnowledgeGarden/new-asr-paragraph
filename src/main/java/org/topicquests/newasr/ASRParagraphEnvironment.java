@@ -60,9 +60,16 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 		sentenceProducer = new SentenceProducer(this, AGENT_GROUP);
 		spacyServerEnvironment = new SpacyDriverEnvironment();
 		paragraphEngine = new ParagraphEngine(this);
-		// firing up WordGramUtil bootstraps punctuation wordgram if not already there
-//		booter = new BootstrapEngine(this);
-//		predImporter = new PredicateImporter(this);
+
+		// shutdown hook
+		Runtime.getRuntime().addShutdownHook(new Thread()
+	    {
+	      public void run()
+	      {
+	        shutDown();
+	      }
+	    });
+
 	}
 	
 	public ParagraphEngine getParagraphEngine() {
