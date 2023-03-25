@@ -12,6 +12,7 @@ import org.topicquests.newasr.impl.ASRSentence;
 import org.topicquests.newasr.kafka.SentenceProducer;
 import org.topicquests.newasr.util.JsonUtil;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
+import org.topicquests.os.asr.pd.api.ISentenceParser;
 import org.topicquests.support.ResultPojo;
 import org.topicquests.support.api.IResult;
 
@@ -24,10 +25,11 @@ import com.google.gson.JsonObject;
 public class ParagraphEngine {
 	private ASRParagraphEnvironment environment;
 	private IAsrParagraphModel model;
+
 	private JsonUtil util;
-	private List<JsonObject> sentences;
+	private List<String> paragraphs;
 	private boolean IS_RUNNING = true;
-	private SentenceThread runner;
+	private ParagraphThread runner;
 	private SpacyDriverEnvironment spacyServerEnvironment;
 	private SentenceProducer sentenceProducer;
 	
@@ -39,7 +41,7 @@ public class ParagraphEngine {
 	public ParagraphEngine(ASRParagraphEnvironment env) {
 		environment =env;
 		model = environment.getModel();
-		sentences = new ArrayList<JsonObject>();
+		paragraphs = new ArrayList<String>();
 		util = new JsonUtil();
 		spacyServerEnvironment = environment.getSpacyServerEnvironment();
 		sentenceProducer = environment.getSentenceProducer();
@@ -51,48 +53,49 @@ public class ParagraphEngine {
 
 	public void startProcessing() {
 		IS_RUNNING = true;
-		runner = new SentenceThread();
+		runner = new ParagraphThread();
 		runner.start();
 	}
 	
 	
 	/**
-	 * Process a {@code sentence}
-	 * @param sentence
+	 * Process a {@code paragraph}
+	 * @param paragrapjh
 	 * @return
 	 */
-	public IResult processSentence(ISentence sentence) {
+	public IResult processParagraph(String paragraph) {
 		IResult result = new ResultPojo();
-		//In theory, sentence arrives as a string and sentenceId
-		//First, send it to the spacy Server
+		System.out.println("Processing\n"+paragraph);
+		IResult r = spacyServerEnvironment.processParagraph(paragraph);
+		System.out.println("Processed "+r.getErrorString()+"\n"+r.getResultObject());
+		environment.logError("Processed\n"+r.getResultObject(), null);
 		return result;
 				
 	}
 	
-	class SentenceThread extends Thread {
+	class ParagraphThread extends Thread {
 		
 		public void run() {
-			JsonObject sent = null;
+			String para = null;
 			while (IS_RUNNING) {
-				synchronized(sentences) {
-					while (sentences.isEmpty()) {
+				synchronized(paragraphs) {
+					while (paragraphs.isEmpty()) {
 						try {
-							sentences.wait();
+							paragraphs.wait();
 						} catch (Exception e) {}
 					}
-					sent = sentences.remove(0);
+					para = paragraphs.remove(0);
 				}
-				if (sent != null) {
-					ISentence s = new ASRSentence(sent);
-					processSentence(s);
+				if (para != null) {
+					processParagraph(para);
 				}
 			}
 		}
 	}
 	public void shutDown() {
-		synchronized(sentences)  {
+		synchronized(paragraphs)  {
 			IS_RUNNING = false;
-			sentences.notify();
+			paragraphs.notify();
 		}
 	}
 }

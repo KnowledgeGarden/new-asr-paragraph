@@ -16,6 +16,7 @@ import org.topicquests.newasr.impl.PostgresWordGramGraphProvider;
 import org.topicquests.newasr.kafka.KafkaHandler;
 import org.topicquests.newasr.kafka.SentenceProducer;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
+import org.topicquests.os.asr.pd.api.ISentenceParser;
 import org.topicquests.pg.PostgresConnectionFactory;
 import org.topicquests.support.RootEnvironment;
 import org.topicquests.support.config.Configurator;
@@ -37,6 +38,8 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 	private SpacyDriverEnvironment spacyServerEnvironment;
 	private ParagraphEngine paragraphEngine;
 	private SentenceProducer sentenceProducer;
+	private ISentenceParser spacy;
+
 	public static final String AGENT_GROUP = "Sentence";
 
 	/**
@@ -61,6 +64,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 		spacyServerEnvironment = new SpacyDriverEnvironment();
 		paragraphEngine = new ParagraphEngine(this);
 
+		paragraphEngine.startProcessing();
 		// shutdown hook
 		Runtime.getRuntime().addShutdownHook(new Thread()
 	    {
