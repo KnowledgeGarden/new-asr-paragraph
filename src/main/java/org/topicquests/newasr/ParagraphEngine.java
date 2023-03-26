@@ -4,7 +4,9 @@
 package org.topicquests.newasr;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.topicquests.newasr.api.IAsrParagraphModel;
 import org.topicquests.newasr.api.ISentence;
@@ -16,6 +18,7 @@ import org.topicquests.os.asr.pd.api.ISentenceParser;
 import org.topicquests.support.ResultPojo;
 import org.topicquests.support.api.IResult;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 /**
@@ -69,6 +72,43 @@ public class ParagraphEngine {
 		IResult r = spacyServerEnvironment.processParagraph(paragraph);
 		System.out.println("Processed "+r.getErrorString()+"\n"+r.getResultObject());
 		environment.logError("Processed\n"+r.getResultObject(), null);
+		List<String> stuff = (List<String>)r.getResultObject();
+		String json;
+		Set<JsonObject> allConcepts = new HashSet<JsonObject>();
+		List<JsonArray> allSentences = new ArrayList<JsonArray>();
+		if (stuff != null && !stuff.isEmpty()) {
+			int len = stuff.size();
+
+			Set<String> keys;
+			JsonObject jo =null;
+			JsonObject temp;
+			JsonArray ja;
+			for (int i=0;i<len;i++) {
+				json = stuff.get(i);
+				try {
+					jo = util.parse(json);
+				} catch (Exception e) {
+					environment.logError(e.getMessage(), e);
+					e.printStackTrace();
+				}
+
+				keys = jo.keySet();
+				//[concepts, markup, model, sentences]
+				// we are interested in concepts and sentences
+				//environment.logError(keys.toString(), null);
+				if (jo.get("concepts") != null) {
+					temp = jo.get("concepts").getAsJsonObject();
+					allConcepts.add(temp);
+				}
+				if (jo.get("sentences") != null) {
+					ja = jo.get("sentences").getAsJsonArray();
+					allSentences.add(ja);
+				}
+				environment.logError("ALLCONCEPTS\n"+allConcepts, null);
+				environment.logError("ALLSENTENCES\n"+allSentences, null);
+System.exit(0);
+			}
+		}
 		return result;
 				
 	}

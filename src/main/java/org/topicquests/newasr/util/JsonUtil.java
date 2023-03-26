@@ -3,6 +3,7 @@
  */
 package org.topicquests.newasr.util;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -26,6 +27,10 @@ public class JsonUtil {
 	 */
 	public JsonObject parse(final String jsonString) throws Exception {
 		return (JsonObject)JsonParser.parseString(jsonString);
+	}
+
+	public JsonArray parseArray(final String jsonString) throws Exception {
+		return (JsonArray)JsonParser.parseString(jsonString);
 	}
 
 }
