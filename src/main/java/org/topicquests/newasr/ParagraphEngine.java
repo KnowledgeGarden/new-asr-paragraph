@@ -74,7 +74,7 @@ public class ParagraphEngine {
 		environment.logError("Processed\n"+r.getResultObject(), null);
 		List<String> stuff = (List<String>)r.getResultObject();
 		String json;
-		Set<JsonObject> allConcepts = new HashSet<JsonObject>();
+		//Set<JsonObject> allConcepts = new HashSet<JsonObject>();
 		List<JsonArray> allSentences = new ArrayList<JsonArray>();
 		if (stuff != null && !stuff.isEmpty()) {
 			int len = stuff.size();
@@ -94,17 +94,18 @@ public class ParagraphEngine {
 
 				keys = jo.keySet();
 				//[concepts, markup, model, sentences]
+				//Decided to ignore concepts for now
 				// we are interested in concepts and sentences
 				//environment.logError(keys.toString(), null);
-				if (jo.get("concepts") != null) {
-					temp = jo.get("concepts").getAsJsonObject();
-					allConcepts.add(temp);
-				}
+				//if (jo.get("concepts") != null) {
+				//	temp = jo.get("concepts").getAsJsonObject();
+				//	allConcepts.add(temp);
+				//}
 				if (jo.get("sentences") != null) {
 					ja = jo.get("sentences").getAsJsonArray();
 					allSentences.add(ja);
 				}
-				environment.logError("ALLCONCEPTS\n"+allConcepts, null);
+				//environment.logError("ALLCONCEPTS\n"+allConcepts, null);
 				environment.logError("ALLSENTENCES\n"+allSentences, null);
 System.exit(0);
 			}
