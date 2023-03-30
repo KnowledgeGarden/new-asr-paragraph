@@ -11,7 +11,7 @@
 	<!-- Consumer Topic for handling sentences-->
 	<parameter name="ParagraphConsumerTopic" value="ParagraphIn" />
 	<!-- Producer Topic  which becomes a source topic for the next agent-->
-	<parameter name="SentenceProducerTopic" value="SentenceOut" />
+	<parameter name="ParagrapheProducerTopic" value="ParagraphOut" />
 
 	<!-- Producer/consumer Topic  for expectation failure events-->
 	<parameter name="ExpectationFailureTopic" value="ExpectFailEvent" />

@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
  * @author jackpark
  *
  */
-public class SentenceListener implements IKafkaDispatcher, IMessageConsumerListener {
+public class ParagraphListener implements IKafkaDispatcher, IMessageConsumerListener {
 	private ASRParagraphEnvironment environment;
 	private IAsrParagraphModel model;
 	private JsonUtil util;
@@ -24,7 +24,7 @@ public class SentenceListener implements IKafkaDispatcher, IMessageConsumerListe
 	/**
 	 * 
 	 */
-	public SentenceListener(ASRParagraphEnvironment env) {
+	public ParagraphListener(ASRParagraphEnvironment env) {
 		environment =env;
 		model = environment.getModel();
 		util = new JsonUtil();
@@ -33,7 +33,7 @@ public class SentenceListener implements IKafkaDispatcher, IMessageConsumerListe
 	@Override
 	public boolean acceptRecord(ConsumerRecord record) {
 		String json = (String)record.value();
-		environment.logDebug("SentenceyListener.acceptRecord "+json);
+		environment.logDebug("ParagraphListener.acceptRecord "+json);
 		boolean result = false;
 		if (json == null)
 			return result;
@@ -41,7 +41,7 @@ public class SentenceListener implements IKafkaDispatcher, IMessageConsumerListe
 			JsonObject data = util.parse(json);
 			result = model.acceptNewSentence(data);
 		} catch (Exception e) {
-			environment.logError("SentenceyListener: "+e.getMessage(), e);
+			environment.logError("ParagraphListener: "+e.getMessage(), e);
 			e.printStackTrace();
 		}
 

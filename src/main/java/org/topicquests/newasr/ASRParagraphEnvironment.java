@@ -10,11 +10,11 @@ import org.topicquests.newasr.api.IAsrDataProvider;
 import org.topicquests.newasr.api.IAsrParagraphModel;
 import org.topicquests.newasr.api.IKafkaDispatcher;
 import org.topicquests.newasr.impl.ASRParagraphModel;
-import org.topicquests.newasr.impl.SentenceListener;
+import org.topicquests.newasr.impl.ParagraphListener;
 import org.topicquests.newasr.impl.SpacyListener;
 import org.topicquests.newasr.impl.PostgresWordGramGraphProvider;
 import org.topicquests.newasr.kafka.KafkaHandler;
-import org.topicquests.newasr.kafka.SentenceProducer;
+import org.topicquests.newasr.kafka.ParagraphProducer;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
 import org.topicquests.os.asr.pd.api.ISentenceParser;
 import org.topicquests.pg.PostgresConnectionFactory;
@@ -37,7 +37,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 	private IKafkaDispatcher spacyListener;
 	private SpacyDriverEnvironment spacyServerEnvironment;
 	private ParagraphEngine paragraphEngine;
-	private SentenceProducer sentenceProducer;
+	private ParagraphProducer sentenceProducer;
 	private ISentenceParser spacy;
 
 	public static final String AGENT_GROUP = "Sentence";
@@ -53,14 +53,14 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 		database = new PostgresWordGramGraphProvider(this);
 		model = new ASRParagraphModel(this);
 		kafkaProps = Configurator.getProperties("kafka-topics.xml");
-		sentenceListener = new SentenceListener(this);
+		sentenceListener = new ParagraphListener(this);
 		spacyListener = new SpacyListener(this);
 		String cTopic = (String)kafkaProps.get("ParagraphConsumerTopic");
 		sentenceConsumer = new KafkaHandler(this, (IMessageConsumerListener)sentenceListener, cTopic, AGENT_GROUP);
 		//cTopic = (String)kafkaProps.get("SentenceSpacyConsumerTopic");
 		//pTopic = (String)kafkaProps.get("SentenceSpacyProducerTopic");
 		//spacyConsumer = new KafkaHandler(this, (IMessageConsumerListener)spacyListener, cTopic, AGENT_GROUP);
-		sentenceProducer = new SentenceProducer(this, AGENT_GROUP);
+		sentenceProducer = new ParagraphProducer(this, AGENT_GROUP);
 		spacyServerEnvironment = new SpacyDriverEnvironment();
 		paragraphEngine = new ParagraphEngine(this);
 
@@ -80,7 +80,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 		return paragraphEngine;
 	}
 	
-	public SentenceProducer getSentenceProducer() {
+	public ParagraphProducer getSentenceProducer() {
 		return sentenceProducer;
 	}
 	/**

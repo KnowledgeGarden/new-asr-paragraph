@@ -13,12 +13,12 @@ import org.topicquests.support.api.IEnvironment;
  * @author park
  *
  */
-public class SentenceProducer extends MessageProducer {
+public class ParagraphProducer extends MessageProducer {
 
   /**
    * @param env
    */
-  public SentenceProducer(IEnvironment env, String clientId) {
+  public ParagraphProducer(IEnvironment env, String clientId) {
     super(env, clientId, true);
   }
 
@@ -28,7 +28,7 @@ public class SentenceProducer extends MessageProducer {
    * @param partition
    */
   public void sendMessage(String topic, String message, String key, Integer partition) {
-    environment.logDebug("SentenceProducer "+message);
+    environment.logDebug("ParagraphProducer "+message);
     super.sendMessage(topic, message, key, partition);
   }
 
