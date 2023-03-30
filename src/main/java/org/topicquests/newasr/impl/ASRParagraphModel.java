@@ -5,7 +5,7 @@ package org.topicquests.newasr.impl;
 
 
 import org.topicquests.newasr.ASRParagraphEnvironment;
-import org.topicquests.newasr.api.IAsrDataProvider;
+import org.topicquests.newasr.api.IParagraphDataProvider;
 import org.topicquests.newasr.api.IAsrParagraphModel;
 import org.topicquests.support.ResultPojo;
 import org.topicquests.support.api.IResult;
@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
  */
 public class ASRParagraphModel implements IAsrParagraphModel {
 	private ASRParagraphEnvironment environment;
-	private IAsrDataProvider database;
+	private IParagraphDataProvider database;
 	private final int CACHE_SIZE = 8192;
 
 	/**

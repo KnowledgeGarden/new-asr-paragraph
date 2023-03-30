@@ -6,13 +6,13 @@ package org.topicquests.newasr;
 import java.util.Map;
 
 import org.topicquests.backside.kafka.consumer.api.IMessageConsumerListener;
-import org.topicquests.newasr.api.IAsrDataProvider;
+import org.topicquests.newasr.api.IParagraphDataProvider;
 import org.topicquests.newasr.api.IAsrParagraphModel;
 import org.topicquests.newasr.api.IKafkaDispatcher;
 import org.topicquests.newasr.impl.ASRParagraphModel;
 import org.topicquests.newasr.impl.ParagraphListener;
+import org.topicquests.newasr.impl.PoatgresParagraphProvider;
 import org.topicquests.newasr.impl.SpacyListener;
-import org.topicquests.newasr.impl.PostgresWordGramGraphProvider;
 import org.topicquests.newasr.kafka.KafkaHandler;
 import org.topicquests.newasr.kafka.ParagraphProducer;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
@@ -29,7 +29,7 @@ import org.topicquests.support.config.Configurator;
 public class ASRParagraphEnvironment extends RootEnvironment {
 	private PostgresConnectionFactory dbDriver = null;
 	private IAsrParagraphModel model;
-	private IAsrDataProvider database;
+	private IParagraphDataProvider database;
 	private KafkaHandler sentenceConsumer;
 	//private KafkaHandler spacyConsumer;
 	private Map<String,Object>kafkaProps;
@@ -40,7 +40,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 	private ParagraphProducer sentenceProducer;
 	private ISentenceParser spacy;
 
-	public static final String AGENT_GROUP = "Sentence";
+	public static final String AGENT_GROUP = "Sentence"; //TODO "Paragraph" ???
 
 	/**
 	 * 
@@ -50,7 +50,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 		String schemaName = getStringProperty("DatabaseSchema");
 		String dbName = getStringProperty("DatabaseName");
 		dbDriver = new PostgresConnectionFactory(dbName, schemaName);
-		database = new PostgresWordGramGraphProvider(this);
+		database = new PoatgresParagraphProvider(this);
 		model = new ASRParagraphModel(this);
 		kafkaProps = Configurator.getProperties("kafka-topics.xml");
 		sentenceListener = new ParagraphListener(this);
@@ -102,7 +102,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 		return kafkaProps;
 	}
 
-	public IAsrDataProvider getDatabase() {
+	public IParagraphDataProvider getDatabase() {
 		return database;
 	}
 	public IAsrParagraphModel getModel() {
