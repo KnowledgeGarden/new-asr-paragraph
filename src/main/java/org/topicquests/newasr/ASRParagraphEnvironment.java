@@ -43,7 +43,7 @@ public class ASRParagraphEnvironment extends ASRBaseEnvironment {
 	 * 
 	 */
 	public ASRParagraphEnvironment() {
-		super("asr-paragraph-config.xml", "logger.properties", null);
+		super("asr-paragraph-config.xml", null, "logger.properties");
 		String schemaName = getStringProperty("DatabaseSchema");
 		String dbName = getStringProperty("DatabaseName");
 		dbDriver = new PostgresConnectionFactory(dbName, schemaName);
