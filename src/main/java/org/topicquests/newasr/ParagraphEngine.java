@@ -13,7 +13,7 @@ import java.util.Set;
 import org.topicquests.newasr.api.IAsrParagraphModel;
 import org.topicquests.newasr.api.ISentence;
 import org.topicquests.newasr.impl.ASRSentence;
-import org.topicquests.newasr.kafka.ParagraphProducer;
+import org.topicquests.newasr.kafka.CommonKafkaProducer;
 import org.topicquests.newasr.util.JsonUtil;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
 import org.topicquests.os.asr.pd.api.ISentenceParser;
@@ -36,7 +36,7 @@ public class ParagraphEngine {
 	private boolean IS_RUNNING = true;
 	private ParagraphThread runner;
 	private SpacyDriverEnvironment spacyServerEnvironment;
-	private ParagraphProducer sentenceProducer;
+	private CommonKafkaProducer sentenceProducer;
 	
 	private final String SENTENCE_TOPIC, SPACY_TOPIC;
 

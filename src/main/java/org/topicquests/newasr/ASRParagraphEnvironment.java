@@ -16,7 +16,6 @@ import org.topicquests.newasr.impl.ASRParagraphModel;
 import org.topicquests.newasr.impl.ParagraphListener;
 import org.topicquests.newasr.impl.PoatgresParagraphProvider;
 import org.topicquests.newasr.kafka.KafkaHandler;
-import org.topicquests.newasr.kafka.ParagraphProducer;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
 import org.topicquests.pg.PostgresConnectionFactory;
 import org.topicquests.support.config.Configurator;
@@ -35,15 +34,13 @@ public class ASRParagraphEnvironment extends ASRBaseEnvironment {
 	private IKafkaDispatcher sentenceListener;
 	private SpacyDriverEnvironment spacyServerEnvironment;
 	private ParagraphEngine paragraphEngine;
-	private ParagraphProducer sentenceProducer;
 
-	public static final String AGENT_GROUP = "Sentence"; //TODO "Paragraph" ???
 
 	/**
 	 * 
 	 */
 	public ASRParagraphEnvironment() {
-		super("asr-paragraph-config.xml", null, "logger.properties");
+		super("asr-paragraph-config.xml", "logger.properties");
 		String schemaName = getStringProperty("DatabaseSchema");
 		String dbName = getStringProperty("DatabaseName");
 		dbDriver = new PostgresConnectionFactory(dbName, schemaName);
@@ -53,7 +50,6 @@ public class ASRParagraphEnvironment extends ASRBaseEnvironment {
 		sentenceListener = new ParagraphListener(this);
 		String cTopic = (String)kafkaProps.get("ParagraphConsumerTopic");
 		sentenceConsumer = new KafkaHandler(this, (IMessageConsumerListener)sentenceListener, cTopic, AGENT_GROUP);
-		sentenceProducer = new ParagraphProducer(this, AGENT_GROUP);
 		spacyServerEnvironment = new SpacyDriverEnvironment();
 		paragraphEngine = new ParagraphEngine(this);
 
@@ -73,9 +69,6 @@ public class ASRParagraphEnvironment extends ASRBaseEnvironment {
 		return paragraphEngine;
 	}
 	
-	public ParagraphProducer getSentenceProducer() {
-		return sentenceProducer;
-	}
 	/**
 	 * There are two spaCy systems in the present code:
 	 * one is on an http service, the other is over kafka
