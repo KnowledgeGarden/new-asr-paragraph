@@ -11,6 +11,7 @@ import org.topicquests.backside.kafka.consumer.api.IMessageConsumerListener;
 import org.topicquests.newasr.api.IParagraphDataProvider;
 import org.topicquests.newasr.api.IAsrParagraphModel;
 import org.topicquests.newasr.api.IKafkaDispatcher;
+import org.topicquests.newasr.impl.ASRBaseEnvironment;
 import org.topicquests.newasr.impl.ASRParagraphModel;
 import org.topicquests.newasr.impl.ParagraphListener;
 import org.topicquests.newasr.impl.PoatgresParagraphProvider;
@@ -18,7 +19,6 @@ import org.topicquests.newasr.kafka.KafkaHandler;
 import org.topicquests.newasr.kafka.ParagraphProducer;
 import org.topicquests.os.asr.driver.sp.SpacyDriverEnvironment;
 import org.topicquests.pg.PostgresConnectionFactory;
-import org.topicquests.support.RootEnvironment;
 import org.topicquests.support.config.Configurator;
 
 
@@ -26,7 +26,7 @@ import org.topicquests.support.config.Configurator;
  * @author jackpark
  *
  */
-public class ASRParagraphEnvironment extends RootEnvironment {
+public class ASRParagraphEnvironment extends ASRBaseEnvironment {
 	private PostgresConnectionFactory dbDriver = null;
 	private IAsrParagraphModel model;
 	private IParagraphDataProvider database;
@@ -43,7 +43,7 @@ public class ASRParagraphEnvironment extends RootEnvironment {
 	 * 
 	 */
 	public ASRParagraphEnvironment() {
-		super("asr-paragraph-config.xml", "logger.properties");
+		super("asr-paragraph-config.xml", "logger.properties", null);
 		String schemaName = getStringProperty("DatabaseSchema");
 		String dbName = getStringProperty("DatabaseName");
 		dbDriver = new PostgresConnectionFactory(dbName, schemaName);
